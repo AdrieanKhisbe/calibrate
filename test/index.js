@@ -118,7 +118,9 @@ describe('Calibrate', () => {
         server.connection();
         server.register({
             register: Calibrate.decorate
-        }, () => {
+        }, (err) => {
+
+            expect(err).to.not.exist();
 
             server.route({
                 method: 'GET',
@@ -136,6 +138,20 @@ describe('Calibrate', () => {
                 expect(res.payload).to.equal(validOutput);
                 done();
             });
+        });
+    });
+
+    it('cannot be registered with wrong option', (done) => {
+
+        const server = new Hapi.Server();
+        server.connection();
+        server.register({
+            register: Calibrate.decorate,
+            options: { stupid: 'key that does not exist' }
+        }, (err) => {
+
+            expect(err).to.not.equal('"stupid" is not allowed');
+            done();
         });
     });
 
